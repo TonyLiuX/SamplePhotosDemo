@@ -10,10 +10,13 @@
 #import "GridViewCell.h"
 #import <PhotosUI/PhotosUI.h>
 
+#import <AVKit/AVKit.h>
+#import <AVFoundation/AVFoundation.h>
+
 #define SCR_WIDTH   [[UIScreen mainScreen] bounds].size.width
 #define SCR_HEIGHT  [[UIScreen mainScreen] bounds].size.height
 
-@interface AssetGridVC ()<UICollectionViewDelegateFlowLayout>
+@interface AssetGridVC ()<UICollectionViewDelegateFlowLayout, UICollectionViewDelegate>
 {
     CGSize thumbnailSize;
     CGRect previousPreheatRect;
@@ -21,12 +24,22 @@
 
 @property (nonatomic, strong) PHCachingImageManager *imageManager;
 @property (nonatomic, strong) PHImageRequestOptions *requestOption;
+@property (nonatomic, strong) AVPlayerViewController *playerVC;
 
 @end
 
 @implementation AssetGridVC
 
 static NSString * const reuseIdentifier = @"Cell";
+
+- (AVPlayerViewController *)playerVC {
+    if (!_playerVC) {
+        _playerVC = [[AVPlayerViewController alloc] init];
+        _playerVC.view.frame = CGRectMake(0, 0, SCR_WIDTH, SCR_WIDTH * 9 / 16);
+        [self addChildViewController:_playerVC];
+    }
+    return _playerVC;
+}
 
 - (void)dealloc
 {
@@ -241,6 +254,18 @@ static NSString * const reuseIdentifier = @"Cell";
 }
 
 #pragma mark <UICollectionViewDelegate>
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    PHAsset *asset = [_fetchResult objectAtIndex:indexPath.item];
+    NSLog(@"%@", asset);
+//    [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset * _Nullable asset, AVAudioMix * _Nullable audioMix, NSDictionary * _Nullable info) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            AVPlayer *player = [[AVPlayer alloc] initWithPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+//                    self.playerVC.player = player;
+//                    [self.view addSubview:self.playerVC.view];
+//        });
+//    }];
+}
 
 /*
 // Uncomment this method to specify if the specified item should be highlighted during tracking
