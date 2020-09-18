@@ -58,6 +58,12 @@ static NSString * const reuseIdentifier = @"Cell";
     self.collectionView.dataSource = self;
     
     // Do any additional setup after loading the view.
+    
+    if (@available(iOS 11.0, *)) {
+        self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentScrollableAxes;
+    } else {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
